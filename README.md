@@ -1,4 +1,8 @@
 # XDTip
+由于文件很小，就不发cocoapods了，使用时把XDTip文件夹拖到项目中，引入XDTip.h即可
+
+使用方式如下
+
 提示框类
 
 ```
@@ -29,7 +33,9 @@ XDTipItem *ele2 = XDTip.alert.element(@"取消").color(UIColor.redColor);
 [XDTip showAlertTitle:title subTitle:subTitle content:content elements:@[ele1,ele2] cancelByErea:YES action:^(NSInteger index, NSString *text ,BOOL cancelByErea) {
     
 }];
+```
 
+```
 // 完全自定义字段可以这么写
 XDTipItem *element = XDTip
                     .alert                                      // 自定义的话这里用.alert 和 .sheet 是一样的
