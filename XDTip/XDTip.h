@@ -80,7 +80,7 @@ typedef NS_ENUM(NSInteger, _XXTipType) {
 
 @interface _XXTipModel : NSObject
 @property (nonatomic, assign) BOOL cancelByErea;
-@property (nonatomic, strong) XDTipItem *tipDes;
+@property (nonatomic, strong) XDTipItem *tipContent;
 @property (nonatomic, strong) XDTipItem *tipTitle;
 @property (nonatomic, strong) XDTipItem *tipSubTitle;
 @property (nonatomic, strong) XDTipItem *tipCancelTitle;

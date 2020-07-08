@@ -138,7 +138,7 @@
         self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         
         self.model = [[_XXTipModel alloc]init];
-        self.model.tipDes = content;
+        self.model.tipContent = content;
         self.model.tipTitle = title;
         self.model.tipSubTitle = subTitle;
         self.model.tipElements = elements;
@@ -1142,8 +1142,8 @@
         [self.alertHeader addSubview:subTitle];
     }
     
-    if (self.model.tipDes) {
-        _XXTipData *data = self.model.tipDes.data;
+    if (self.model.tipContent) {
+        _XXTipData *data = self.model.tipContent.data;
         
         CGFloat offy = 0;
         if (title) {
