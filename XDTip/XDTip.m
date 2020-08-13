@@ -631,12 +631,15 @@
         title.text = data.text;
         
         CGSize titleSize = [title sizeThatFits:CGSizeMake(XDTipSheetWidth-2*titleToEdge, MAXFLOAT)];
-        CGFloat titleHeight = data.height < titleSize.height ? titleSize.height : data.height;
+        CGFloat height = titleSize.height;
+        if (height+titleToTop+titleToTop < data.height) {
+            height = data.height - titleToTop - titleToTop;
+        }
         
         [title setFrame:CGRectMake(CGRectGetMinX(title.frame),
                                    CGRectGetMinY(title.frame),
                                    CGRectGetWidth(title.frame),
-                                   titleHeight)];
+                                   height)];
         
         CGFloat headerHeight = CGRectGetMaxY(title.frame)+titleToTop;
         [self.sheetHeader setFrame:CGRectMake(0,
@@ -664,12 +667,16 @@
         subTitle.text = data.text;
         
         CGSize subTitleSize = [subTitle sizeThatFits:CGSizeMake(XDTipSheetWidth-2*titleToEdge, MAXFLOAT)];
-        CGFloat subTitleHeight = data.height < subTitleSize.height ? subTitleSize.height : data.height;
+        
+        CGFloat height = subTitleSize.height;
+        if (height+offy+titleToTop < data.height) {
+            height = data.height - offy - titleToTop;
+        }
         
         [subTitle setFrame:CGRectMake(CGRectGetMinX(subTitle.frame),
                                       CGRectGetMinY(subTitle.frame),
                                       CGRectGetWidth(subTitle.frame),
-                                      subTitleHeight)];
+                                      height)];
         
         CGFloat headerHeight = CGRectGetMaxY(subTitle.frame)+titleToTop;
         [self.sheetHeader setFrame:CGRectMake(0,
@@ -1094,12 +1101,16 @@
         title.text = data.text;
         
         CGSize titleSize = [title sizeThatFits:CGSizeMake(XDTipAlertWidth-2*titleToEdge, MAXFLOAT)];
-        CGFloat titleHeight = data.height < titleSize.height ? titleSize.height : data.height;
+        
+        CGFloat height = titleSize.height;
+        if (height+titleToTop+titleToTop < data.height) {
+            height = data.height - titleToTop - titleToTop;
+        }
         
         [title setFrame:CGRectMake(CGRectGetMinX(title.frame),
                                    CGRectGetMinY(title.frame),
                                    CGRectGetWidth(title.frame),
-                                   titleHeight)];
+                                   height)];
         
         CGFloat headerHeight = CGRectGetMaxY(title.frame)+titleToTop;
         [self.alertHeader setFrame:CGRectMake(0,
@@ -1125,12 +1136,16 @@
         subTitle.text = data.text;
         
         CGSize subTitleSize = [subTitle sizeThatFits:CGSizeMake(XDTipAlertWidth-2*titleToEdge, MAXFLOAT)];
-        CGFloat subTitleHeight = data.height < subTitleSize.height ? subTitleSize.height : data.height;
+        
+        CGFloat height = subTitleSize.height;
+        if (height+offy+titleToTop < data.height) {
+            height = data.height - offy - titleToTop;
+        }
         
         [subTitle setFrame:CGRectMake(CGRectGetMinX(subTitle.frame),
                                       CGRectGetMinY(subTitle.frame),
                                       CGRectGetWidth(subTitle.frame),
-                                      subTitleHeight)];
+                                      height)];
         
         CGFloat headerHeight = CGRectGetMaxY(subTitle.frame)+titleToTop;
         [self.alertHeader setFrame:CGRectMake(0,
@@ -1161,7 +1176,26 @@
         content.numberOfLines = data.numberOfLines;
         content.textColor = data.color;
         content.font = data.font;
-        content.text = data.text;
+        
+        NSMutableAttributedString *astr = [[NSMutableAttributedString alloc]initWithString:data.text];
+        // 设置行间距
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.lineSpacing = 4;
+        
+        [astr addAttribute:NSParagraphStyleAttributeName
+                     value:paragraphStyle
+                     range:NSMakeRange(0, astr.length)];
+        
+        // 设置字体和大小
+        [astr addAttribute:NSFontAttributeName
+                     value:data.font
+                     range:NSMakeRange(0, astr.length)];
+        
+        [astr addAttribute:NSForegroundColorAttributeName
+                     value:data.color
+                     range:NSMakeRange(0, astr.length)];
+        
+        content.attributedText = astr;
         
         CGSize desSize = [content sizeThatFits:CGSizeMake(XDTipAlertWidth-2*titleToEdge, MAXFLOAT)];
         
@@ -1173,7 +1207,12 @@
             width = XDTipAlertWidth-2*titleToEdge;
         }
         
-        [content setFrame:CGRectMake(offx, offy, width, desSize.height)];
+        CGFloat height = desSize.height;
+        if (height+offy+titleToTop < data.height) {
+            height = data.height - offy - titleToTop;
+        }
+        
+        [content setFrame:CGRectMake(offx, offy, width, height)];
         
         CGFloat headerHeight = CGRectGetMaxY(content.frame)+titleToTop;
         [self.alertHeader setFrame:CGRectMake(0,
