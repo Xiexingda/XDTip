@@ -193,21 +193,6 @@
     return window;
 }
 
-#pragma mark - system method
-// 禁止当前屏幕旋转
-- (BOOL)shouldAutorotate {
-    return NO;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskAll;
-}
-
-// 推迟边缘手势
-- (UIRectEdge)preferredScreenEdgesDeferringSystemGestures {
-    return  UIRectEdgeAll;
-}
-
 @end
 
 
