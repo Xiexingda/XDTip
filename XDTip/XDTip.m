@@ -21,7 +21,6 @@
 #define XDTipIsIphoneX YES
 
 @interface XDTip ()
-@property (nonatomic,   copy) void(^tipCanShowBlock)(_XXTipType type);
 @property (nonatomic, strong) _XXTipSheetUI *sheetUI;
 @property (nonatomic, strong) _XXTipAlertUI *alertUI;
 @property (nonatomic, strong) _XXTipModel *model;
@@ -39,7 +38,7 @@
     return [[XDTipItem alloc]initByType:_XXTip_Alert];
 }
 
-+ (void)showSheetTitle:(XDTipItem *)title subTitle:(XDTipItem *)subTitle elements:(NSArray<XDTipItem *> *)elements cancelBtnTitle:(XDTipItem *)cancelBtnTitle cancelByErea:(BOOL)cancelByErea action:(void (^)(NSInteger, NSString *, BOOL, BOOL))action {
++ (instancetype)showSheetTitle:(XDTipItem *)title subTitle:(XDTipItem *)subTitle elements:(NSArray<XDTipItem *> *)elements cancelBtnTitle:(XDTipItem *)cancelBtnTitle cancelByErea:(BOOL)cancelByErea action:(void (^)(NSInteger, NSString *, BOOL, BOOL))action {
     
     [[self xd_keyWindow]endEditing:YES];
     
@@ -51,30 +50,10 @@
                     cancelByErea:cancelByErea
                     action:action];
     
-    UIViewController *c_vc = [self xd_keyController];
-    
-    if ([c_vc isBeingDismissed]) {
-        
-        if (c_vc.presentingViewController) {
-            [c_vc.presentingViewController presentViewController:sheet animated:NO completion:^{
-                if (sheet.tipCanShowBlock) {
-                    sheet.tipCanShowBlock(_XXTip_Sheet);
-                }
-            }];
-        }
-        
-    } else {
-        
-        [c_vc presentViewController:sheet animated:NO completion:^{
-            if (sheet.tipCanShowBlock) {
-                sheet.tipCanShowBlock(_XXTip_Sheet);
-            }
-        }];
-        
-    }
+    return sheet;
 }
 
-+ (void)showAlertTitle:(XDTipItem *)title subTitle:(XDTipItem *)subTitle content:(XDTipItem *)content elements:(NSArray<XDTipItem *> *)elements cancelByErea:(BOOL)cancelByErea action:(void (^)(NSInteger, NSString *, BOOL))action {
++ (instancetype)showAlertTitle:(XDTipItem *)title subTitle:(XDTipItem *)subTitle content:(XDTipItem *)content elements:(NSArray<XDTipItem *> *)elements cancelByErea:(BOOL)cancelByErea action:(void (^)(NSInteger, NSString *, BOOL))action {
     
     [[self xd_keyWindow]endEditing:YES];
     
@@ -86,37 +65,14 @@
                     cancelByErea:cancelByErea
                     action:action];
      
-    UIViewController *c_vc = [self xd_keyController];
-    
-    if ([c_vc isBeingDismissed]) {
-        
-        if (c_vc.presentingViewController) {
-            [c_vc.presentingViewController presentViewController:alert animated:NO completion:^{
-                if (alert.tipCanShowBlock) {
-                    alert.tipCanShowBlock(_XXTip_Alert);
-                }
-            }];
-        }
-        
-    } else {
-        
-        [c_vc presentViewController:alert animated:NO completion:^{
-            if (alert.tipCanShowBlock) {
-                alert.tipCanShowBlock(_XXTip_Alert);
-            }
-        }];
-        
-    }
+    return alert;
 }
 
 - (instancetype)initSheetTitle:(XDTipItem *)title subTitle:(XDTipItem *)subTitle elements:(NSArray<XDTipItem *> *)elements cancelBtnTitle:(XDTipItem *)cancelBtnTitle cancelByErea:(BOOL)cancelByErea action:(void (^)(NSInteger, NSString *, BOOL, BOOL))action {
     
-    self = [super init];
+    self = [super initWithFrame:UIScreen.mainScreen.bounds];
     
     if (self) {
-        
-        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        
         self.model = [[_XXTipModel alloc]init];
         self.model.tipTitle = title;
         self.model.tipSubTitle = subTitle;
@@ -124,6 +80,9 @@
         self.model.tipCancelTitle = cancelBtnTitle;
         self.model.cancelByErea = cancelByErea;
         self.sheetAction = action;
+        [self addSubview:self.sheetUI];
+        
+        [self showSheet];
     }
     
     return self;
@@ -131,12 +90,9 @@
 
 - (instancetype)initAlertTitle:(XDTipItem *)title subTitle:(XDTipItem *)subTitle content:(XDTipItem *)content elements:(NSArray<XDTipItem *> *)elements cancelByErea:(BOOL)cancelByErea action:(void (^)(NSInteger, NSString *, BOOL))action {
     
-    self = [super init];
+    self = [super initWithFrame:UIScreen.mainScreen.bounds];
     
     if (self) {
-        
-        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        
         self.model = [[_XXTipModel alloc]init];
         self.model.tipContent = content;
         self.model.tipTitle = title;
@@ -144,6 +100,9 @@
         self.model.tipElements = elements;
         self.model.cancelByErea = cancelByErea;
         self.alertAction = action;
+        [self addSubview:self.alertUI];
+        
+        [self showAlert];
     }
     
     return self;
@@ -153,41 +112,24 @@
     NSLog(@"释放XDTip");
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    __weak typeof(self) weakSelf = self;
-    
-    [self setTipCanShowBlock:^(_XXTipType type) {
-        
-        if (type == _XXTip_Sheet) {
-            [weakSelf showSheet];
-            
-        } else if (type == _XXTip_Alert) {
-            [weakSelf showAlert];
-        }
-        
-    }];
-}
-
 #pragma mark - UI for sheet
 - (void)showSheet {
-    [[XDTip xd_keyWindow] addSubview:self.sheetUI];
+    [[XDTip xd_keyWindow] addSubview:self];
+    [self.sheetUI sheetShow];
 }
 
 - (void)hiddenSheet {
-    [self.sheetUI removeFromSuperview];
-    [self dismissViewControllerAnimated:NO completion:nil];
+    [self removeFromSuperview];
 }
 
 #pragma mark - UI for alert
 - (void)showAlert {
-    [[XDTip xd_keyWindow] addSubview:self.alertUI];
+    [[XDTip xd_keyWindow] addSubview:self];
+    [self.alertUI alertShow];
 }
 
 - (void)hiddenAlert {
-    [self.alertUI removeFromSuperview];
-    [self dismissViewControllerAnimated:NO completion:nil];
+    [self removeFromSuperview];
 }
 
 #pragma mark - lazy load
@@ -197,7 +139,7 @@
         
         __weak typeof(self) weakSelf = self;
         
-        _sheetUI = [[_XXTipSheetUI alloc]initWithFrame:self.view.bounds model:self.model action:^(NSInteger index, NSString *text, BOOL cancelByBtn, BOOL cancelByErea) {
+        _sheetUI = [[_XXTipSheetUI alloc]initWithFrame:self.bounds model:self.model action:^(NSInteger index, NSString *text, BOOL cancelByBtn, BOOL cancelByErea) {
             
             if (weakSelf.sheetAction) {
                 weakSelf.sheetAction(index, text, cancelByBtn, cancelByErea);
@@ -217,7 +159,7 @@
         
         __weak typeof(self) weakSelf = self;
         
-        _alertUI = [[_XXTipAlertUI alloc]initWithFrame:self.view.bounds model:self.model action:^(NSInteger index, NSString *text, BOOL cancelByErea) {
+        _alertUI = [[_XXTipAlertUI alloc]initWithFrame:self.bounds model:self.model action:^(NSInteger index, NSString *text, BOOL cancelByErea) {
             
             if (weakSelf.alertAction) {
                 weakSelf.alertAction(index, text, cancelByErea);
@@ -532,7 +474,6 @@
         self.model = model;
         self.actionBlock = action;
         self.tipHiddenBlock = finish;
-        [self sheetShow];
     }
     
     return self;
@@ -1017,7 +958,6 @@
         self.actionBlock = action;
         self.tipHiddenBlock = finish;
         self.model = model;
-        [self alertShow];
     }
     
     return self;

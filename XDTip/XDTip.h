@@ -14,27 +14,27 @@ typedef NS_ENUM(NSInteger, _XXTipType) {
     _XXTip_Alert
 };
 
-@interface XDTip : UIViewController
+@interface XDTip : UIView
 
 // sheet
 + (XDTipItem *)sheet;
 
-+ (void)showSheetTitle:(XDTipItem *)title
-              subTitle:(XDTipItem *)subTitle
-              elements:(NSArray <XDTipItem *>*)elements
-        cancelBtnTitle:(XDTipItem *)cancelBtnTitle
-          cancelByErea:(BOOL)cancelByErea
-                action:(void(^)(NSInteger index, NSString *text, BOOL cancelByBtn, BOOL cancelByErea))action;
++ (instancetype)showSheetTitle:(XDTipItem *)title
+                      subTitle:(XDTipItem *)subTitle
+                      elements:(NSArray <XDTipItem *>*)elements
+                cancelBtnTitle:(XDTipItem *)cancelBtnTitle
+                  cancelByErea:(BOOL)cancelByErea
+                        action:(void(^)(NSInteger index, NSString *text, BOOL cancelByBtn, BOOL cancelByErea))action;
 
 // alert
 + (XDTipItem *)alert;
 
-+ (void)showAlertTitle:(XDTipItem *)title
-              subTitle:(XDTipItem *)subTitle
-               content:(XDTipItem *)content
-              elements:(NSArray <XDTipItem *>*)elements
-          cancelByErea:(BOOL)cancelByErea
-                action:(void(^)(NSInteger index, NSString *text, BOOL cancelByErea))action;
++ (instancetype)showAlertTitle:(XDTipItem *)title
+                      subTitle:(XDTipItem *)subTitle
+                       content:(XDTipItem *)content
+                      elements:(NSArray <XDTipItem *>*)elements
+                  cancelByErea:(BOOL)cancelByErea
+                        action:(void(^)(NSInteger index, NSString *text, BOOL cancelByErea))action;
 @end
 
 
@@ -93,6 +93,7 @@ typedef NS_ENUM(NSInteger, _XXTipType) {
 @interface _XXTipSheetUI : UIView
 - (instancetype)initWithFrame:(CGRect)frame model:(_XXTipModel *)model action:(void(^)(NSInteger index, NSString *text, BOOL cancelByBtn, BOOL cancelByErea))action hiddenFinish:(void(^)(void))finish;
 
+- (void)sheetShow;
 @end
 
 
@@ -110,6 +111,7 @@ typedef NS_ENUM(NSInteger, _XXTipType) {
 @interface _XXTipAlertUI : UIView
 - (instancetype)initWithFrame:(CGRect)frame model:(_XXTipModel *)model action:(void(^)(NSInteger index, NSString *text, BOOL cancelByErea))action hiddenFinish:(void(^)(void))finish;
 
+- (void)alertShow;
 @end
 
 
