@@ -174,44 +174,6 @@
 }
 
 #pragma mark - private method
-+ (UIViewController *)xd_keyController {
-    
-    UIViewController *c_VC = nil;
-    
-    UIViewController *r_VC = [self xd_keyWindow].rootViewController;
-    
-    while (true) {
-        
-        if ([r_VC isKindOfClass:[UINavigationController class]]) {
-            
-            UINavigationController *n_VC = (UINavigationController *)r_VC;
-            UIViewController *vc = n_VC.visibleViewController;
-            c_VC = vc;
-            r_VC = vc.presentedViewController;
-            continue;
-            
-        } else if([r_VC isKindOfClass:[UITabBarController class]]) {
-            
-            UITabBarController *t_VC = (UITabBarController *)r_VC;
-            c_VC = t_VC;
-            r_VC = [t_VC.viewControllers objectAtIndex:t_VC.selectedIndex];
-            continue;
-            
-        } else if([r_VC isKindOfClass:[UIViewController class]]) {
-            
-            UIViewController *vc = (UIViewController *)r_VC;
-            c_VC = vc;
-            r_VC = vc.presentedViewController;
-            continue;
-            
-        } else {
-            break;
-        }
-    }
-    
-    return c_VC;
-}
-
 //获取当前keyWindow
 + (UIWindow *)xd_keyWindow {
 #pragma clang diagnostic push
